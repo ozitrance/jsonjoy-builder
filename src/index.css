@@ -1,7 +1,7 @@
 @import "@mantine/core/styles.css";
 
 .jsonjoy {
-  color: var(--mantine-color-text);
+  color: var(--mantine-color-gray-7);
   font-family: var(--mantine-font-family);
 }
 
@@ -46,6 +46,50 @@
 .jsonjoy-type-pill--null {
   background: var(--mantine-color-gray-0);
   color: var(--mantine-color-gray-7);
+}
+
+.monaco-editor .jsonjoy-required {
+  color: var(--mantine-color-red-7);
+  font-weight: 600;
+}
+
+.monaco-editor .jsonjoy-token-type-string {
+  color: var(--mantine-color-blue-7);
+  font-weight: 600;
+}
+
+.monaco-editor .jsonjoy-token-type-number {
+  color: var(--mantine-color-grape-7);
+  font-weight: 600;
+}
+
+.monaco-editor .jsonjoy-token-type-boolean {
+  color: var(--mantine-color-green-7);
+  font-weight: 600;
+}
+
+.monaco-editor .jsonjoy-token-type-object {
+  color: var(--mantine-color-orange-7);
+  font-weight: 600;
+}
+
+.monaco-editor .jsonjoy-token-type-array {
+  color: var(--mantine-color-pink-7);
+  font-weight: 600;
+}
+
+.monaco-editor .jsonjoy-token-type-null {
+  color: var(--mantine-color-gray-7);
+  font-weight: 600;
+}
+
+.monaco-editor .jsonjoy-schema-keyword {
+  color: var(--mantine-color-gray-6);
+  font-weight: 600;
+}
+
+[data-mantine-color-scheme="dark"] .monaco-editor .jsonjoy-schema-keyword {
+  color: var(--mantine-color-dark-0);
 }
 
 .jsonjoy-spin {

@@ -1,7 +1,7 @@
 import { ActionIcon, Text } from "@mantine/core";
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Download, FileJson, Loader2 } from "lucide-react";
-import { type FC, useRef } from "react";
+import { type FC, useEffect, useRef } from "react";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
@@ -26,19 +26,33 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
     currentTheme,
     defineMonacoThemes,
     configureJsonDefaults,
+    setupRequiredFieldHighlighting,
     defaultEditorOptions,
   } = useMonacoTheme();
+  const requiredHighlightDisposeRef = useRef<null | (() => void)>(null);
 
   const t = useTranslation();
+
+  useEffect(() => {
+    return () => {
+      requiredHighlightDisposeRef.current?.();
+      requiredHighlightDisposeRef.current = null;
+    };
+  }, []);
 
   const handleBeforeMount: BeforeMount = (monaco) => {
     defineMonacoThemes(monaco);
     configureJsonDefaults(monaco);
   };
 
-  const handleEditorDidMount: OnMount = (editor) => {
+  const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
     editor.focus();
+    requiredHighlightDisposeRef.current?.();
+    requiredHighlightDisposeRef.current = setupRequiredFieldHighlighting(
+      monaco,
+      editor,
+    );
   };
 
   const handleEditorChange = (value: string | undefined) => {
@@ -86,7 +100,7 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
       <div className={styles.editorArea}>
         <Editor
           height="100%"
-          defaultLanguage="json"
+          language="json"
           value={JSON.stringify(schema, null, 2)}
           onChange={handleEditorChange}
           beforeMount={handleBeforeMount}

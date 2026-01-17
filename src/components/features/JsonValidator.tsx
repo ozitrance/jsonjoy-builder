@@ -40,8 +40,10 @@ export function JsonValidator({
     currentTheme,
     defineMonacoThemes,
     configureJsonDefaults,
+    setupRequiredFieldHighlighting,
     defaultEditorOptions,
   } = useMonacoTheme();
+  const schemaHighlightDisposeRef = useRef<null | (() => void)>(null);
 
   const validateJsonAgainstSchema = useCallback(() => {
     if (!jsonInput.trim()) {
@@ -69,6 +71,13 @@ export function JsonValidator({
     };
   }, [validateJsonAgainstSchema]);
 
+  useEffect(() => {
+    return () => {
+      schemaHighlightDisposeRef.current?.();
+      schemaHighlightDisposeRef.current = null;
+    };
+  }, []);
+
   const handleJsonEditorBeforeMount: BeforeMount = (monaco) => {
     monacoRef.current = monaco;
     defineMonacoThemes(monaco);
@@ -83,6 +92,14 @@ export function JsonValidator({
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
     editor.focus();
+  };
+
+  const handleSchemaEditorDidMount: OnMount = (editor, monaco) => {
+    schemaHighlightDisposeRef.current?.();
+    schemaHighlightDisposeRef.current = setupRequiredFieldHighlighting(
+      monaco,
+      editor,
+    );
   };
 
   const handleEditorChange = (value: string | undefined) => {
@@ -128,7 +145,7 @@ export function JsonValidator({
             <div className={styles.editorContainer}>
               <Editor
                 height="600px"
-                defaultLanguage="json"
+                language="json"
                 value={jsonInput}
                 onChange={handleEditorChange}
                 beforeMount={handleJsonEditorBeforeMount}
@@ -151,9 +168,10 @@ export function JsonValidator({
             <div className={styles.editorContainer}>
               <Editor
                 height="600px"
-                defaultLanguage="json"
+                language="json"
                 value={JSON.stringify(schema, null, 2)}
                 beforeMount={handleSchemaEditorBeforeMount}
+                onMount={handleSchemaEditorDidMount}
                 loading={
                   <div className={styles.loader}>
                     <Loader2 size={24} className="jsonjoy-spin" />

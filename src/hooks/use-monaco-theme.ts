@@ -99,26 +99,61 @@ export function useMonacoTheme() {
   }, []);
 
   const defineMonacoThemes = (monaco: typeof Monaco) => {
+    const getCssColor = (name: string, fallback: string) => {
+      if (typeof window === "undefined") return fallback;
+      const value = getComputedStyle(
+        document.documentElement,
+      ).getPropertyValue(name);
+      return value?.trim() || fallback;
+    };
+
+    const palette = {
+      stringLight: getCssColor("--mantine-color-blue-7", "#ae3ec9"),
+      stringDark: getCssColor("--mantine-color-blue-7", "#ae3ec9"),
+      numberLight: getCssColor("--mantine-color-grape-7", "#ae3ec9"),
+      numberDark: getCssColor("--mantine-color-grape-7", "#ae3ec9"),
+      booleanLight: getCssColor("--mantine-color-green-7", "#37b24d"),
+      booleanDark: getCssColor("--mantine-color-green-7", "#37b24d"),
+      objectLight: getCssColor("--mantine-color-orange-7", "#f76707"),
+      objectDark: getCssColor("--mantine-color-orange-7", "#f76707"),
+      arrayLight: getCssColor("--mantine-color-pink-7", "#d6336c"),
+      arrayDark: getCssColor("--mantine-color-pink-7", "#d6336c"),
+      nullLight: getCssColor("--mantine-color-gray-7", "#495057"),
+      nullDark: getCssColor("--mantine-color-gray-7", "#495057"),
+      punctuationLight: getCssColor("--mantine-color-gray-6", "#868e96"),
+      punctuationDark: getCssColor("--mantine-color-gray-6", "#868e96"),
+      requiredLight: getCssColor("--mantine-color-red-7", "#f03e3e"),
+      requiredDark: getCssColor("--mantine-color-red-7", "#f03e3e"),
+    };
+
     // Define custom light theme that matches app colors
     monaco.editor.defineTheme("appLightTheme", {
       base: "vs",
       inherit: true,
       rules: [
-        // JSON syntax highlighting based on utils.ts type colors
-        { token: "string", foreground: "3B82F6" }, // text-blue-500
-        { token: "number", foreground: "A855F7" }, // text-purple-500
-        { token: "keyword", foreground: "3B82F6" }, // text-blue-500
-        { token: "delimiter", foreground: "0F172A" }, // text-slate-900
-        { token: "keyword.json", foreground: "A855F7" }, // text-purple-500
-        { token: "string.key.json", foreground: "2563EB" }, // text-blue-600
-        { token: "string.value.json", foreground: "3B82F6" }, // text-blue-500
-        { token: "boolean", foreground: "22C55E" }, // text-green-500
-        { token: "null", foreground: "64748B" }, // text-gray-500
+        // JSON syntax highlighting
+        { token: "string.key.json", foreground: palette.stringLight },
+        { token: "string.value.json", foreground: palette.stringLight },
+        { token: "string", foreground: palette.stringLight },
+        { token: "number", foreground: palette.numberLight },
+        { token: "boolean", foreground: palette.booleanLight },
+        { token: "keyword.json", foreground: palette.booleanLight },
+        { token: "keyword", foreground: palette.booleanLight },
+        { token: "null", foreground: palette.nullLight },
+        { token: "delimiter.bracket.json", foreground: palette.objectLight },
+        { token: "delimiter.array.json", foreground: palette.arrayLight },
+        { token: "delimiter.colon.json", foreground: palette.punctuationLight },
+        { token: "delimiter.comma.json", foreground: palette.punctuationLight },
+        {
+          token: "invalid",
+          foreground: palette.requiredLight,
+          fontStyle: "underline",
+        },
       ],
       colors: {
         // Light theme colors (using hex values instead of CSS variables)
         "editor.background": "#f8fafc", // --background
-        "editor.foreground": "#0f172a", // --foreground
+        "editor.foreground": "#495057", // mantine gray-7
         "editorCursor.foreground": "#0f172a", // --foreground
         "editor.lineHighlightBackground": "#f1f5f9", // --muted
         "editorLineNumber.foreground": "#64748b", // --muted-foreground
@@ -135,21 +170,29 @@ export function useMonacoTheme() {
       base: "vs-dark",
       inherit: true,
       rules: [
-        // JSON syntax highlighting based on utils.ts type colors
-        { token: "string", foreground: "3B82F6" }, // text-blue-500
-        { token: "number", foreground: "A855F7" }, // text-purple-500
-        { token: "keyword", foreground: "3B82F6" }, // text-blue-500
-        { token: "delimiter", foreground: "F8FAFC" }, // text-slate-50
-        { token: "keyword.json", foreground: "A855F7" }, // text-purple-500
-        { token: "string.key.json", foreground: "60A5FA" }, // text-blue-400
-        { token: "string.value.json", foreground: "3B82F6" }, // text-blue-500
-        { token: "boolean", foreground: "22C55E" }, // text-green-500
-        { token: "null", foreground: "94A3B8" }, // text-gray-400
+        // JSON syntax highlighting
+        { token: "string.key.json", foreground: palette.stringDark },
+        { token: "string.value.json", foreground: palette.stringDark },
+        { token: "string", foreground: palette.stringDark },
+        { token: "number", foreground: palette.numberDark },
+        { token: "boolean", foreground: palette.booleanDark },
+        { token: "keyword.json", foreground: palette.booleanDark },
+        { token: "keyword", foreground: palette.booleanDark },
+        { token: "null", foreground: palette.nullDark },
+        { token: "delimiter.bracket.json", foreground: palette.objectDark },
+        { token: "delimiter.array.json", foreground: palette.arrayDark },
+        { token: "delimiter.colon.json", foreground: palette.punctuationDark },
+        { token: "delimiter.comma.json", foreground: palette.punctuationDark },
+        {
+          token: "invalid",
+          foreground: palette.requiredDark,
+          fontStyle: "underline",
+        },
       ],
       colors: {
         // Dark theme colors (using hex values instead of CSS variables)
         "editor.background": "#0f172a", // --background
-        "editor.foreground": "#f8fafc", // --foreground
+        "editor.foreground": "#c9c9c9", // mantine dark-0
         "editorCursor.foreground": "#f8fafc", // --foreground
         "editor.lineHighlightBackground": "#1e293b", // --muted
         "editorLineNumber.foreground": "#64748b", // --muted-foreground
@@ -162,11 +205,406 @@ export function useMonacoTheme() {
     });
   };
 
+  const setupRequiredFieldHighlighting = (
+    monaco: typeof Monaco,
+    editor: Monaco.editor.IStandaloneCodeEditor,
+  ) => {
+    let decorations: string[] = [];
+    let disposed = false;
+    let requestId = 0;
+
+    const typeClassByValue: Record<string, string> = {
+      string: "jsonjoy-token-type-string",
+      number: "jsonjoy-token-type-number",
+      integer: "jsonjoy-token-type-number",
+      boolean: "jsonjoy-token-type-boolean",
+      object: "jsonjoy-token-type-object",
+      array: "jsonjoy-token-type-array",
+      null: "jsonjoy-token-type-null",
+    };
+
+    const collectRequiredStrings = (
+      node: MonacoJson.ASTNode,
+      results: MonacoJson.StringASTNode[],
+    ) => {
+      if (node.type === "object") {
+        for (const property of node.properties) {
+          if (
+            property.keyNode.value === "required" &&
+            property.valueNode?.type === "array"
+          ) {
+            for (const item of property.valueNode.items) {
+              if (item.type === "string") {
+                results.push(item);
+              }
+            }
+          }
+        }
+
+        for (const property of node.properties) {
+          if (property.valueNode) {
+            collectRequiredStrings(property.valueNode, results);
+          }
+        }
+        return;
+      }
+
+      if (node.type === "array") {
+        for (const item of node.items) {
+          collectRequiredStrings(item, results);
+        }
+      }
+    };
+
+    const collectSchemaTypeStrings = (
+      node: MonacoJson.ASTNode,
+      results: Array<{ node: MonacoJson.StringASTNode; className: string }>,
+    ) => {
+      if (node.type === "object") {
+        for (const property of node.properties) {
+          if (property.keyNode.value === "type") {
+            if (property.valueNode?.type === "string") {
+              const className = typeClassByValue[property.valueNode.value];
+              if (className) {
+                results.push({ node: property.valueNode, className });
+              }
+            }
+
+            if (property.valueNode?.type === "array") {
+              for (const item of property.valueNode.items) {
+                if (item.type === "string") {
+                  const className = typeClassByValue[item.value];
+                  if (className) {
+                    results.push({ node: item, className });
+                  }
+                }
+              }
+            }
+          }
+
+          if (property.valueNode) {
+            collectSchemaTypeStrings(property.valueNode, results);
+          }
+        }
+        return;
+      }
+
+      if (node.type === "array") {
+        for (const item of node.items) {
+          collectSchemaTypeStrings(item, results);
+        }
+      }
+    };
+
+    const getSchemaTypeFromNode = (node?: MonacoJson.ASTNode) => {
+      if (!node || node.type !== "object") return undefined;
+
+      let hasProperties = false;
+      let hasItems = false;
+
+      for (const property of node.properties) {
+        if (property.keyNode.value === "type") {
+          if (property.valueNode?.type === "string") {
+            return property.valueNode.value;
+          }
+          if (property.valueNode?.type === "array") {
+            for (const item of property.valueNode.items) {
+              if (item.type === "string") {
+                return item.value;
+              }
+            }
+          }
+        }
+
+        if (property.keyNode.value === "properties") {
+          hasProperties = true;
+        }
+
+        if (property.keyNode.value === "items") {
+          hasItems = true;
+        }
+      }
+
+      if (hasProperties) return "object";
+      if (hasItems) return "array";
+      return undefined;
+    };
+
+    const collectPropertyNameTypes = (
+      node: MonacoJson.ASTNode,
+      results: Array<{ node: MonacoJson.StringASTNode; className: string }>,
+    ) => {
+      if (node.type === "object") {
+        for (const property of node.properties) {
+          if (
+            property.keyNode.value === "properties" &&
+            property.valueNode?.type === "object"
+          ) {
+            for (const prop of property.valueNode.properties) {
+              const schemaType = getSchemaTypeFromNode(prop.valueNode);
+              const className =
+                schemaType && typeClassByValue[schemaType];
+              if (className) {
+                results.push({ node: prop.keyNode, className });
+              }
+              if (prop.valueNode) {
+                collectPropertyNameTypes(prop.valueNode, results);
+              }
+            }
+          } else if (property.valueNode) {
+            collectPropertyNameTypes(property.valueNode, results);
+          }
+        }
+        return;
+      }
+
+      if (node.type === "array") {
+        for (const item of node.items) {
+          collectPropertyNameTypes(item, results);
+        }
+      }
+    };
+
+    const collectDescriptionValueTypes = (
+      node: MonacoJson.ASTNode,
+      results: Array<{ node: MonacoJson.StringASTNode; className: string }>,
+    ) => {
+      if (node.type === "object") {
+        const schemaType = getSchemaTypeFromNode(node);
+        const className = schemaType && typeClassByValue[schemaType];
+
+        if (className) {
+          for (const property of node.properties) {
+            if (
+              property.keyNode.value === "description" &&
+              property.valueNode?.type === "string"
+            ) {
+              results.push({ node: property.valueNode, className });
+            }
+          }
+        }
+
+        for (const property of node.properties) {
+          if (property.valueNode) {
+            collectDescriptionValueTypes(property.valueNode, results);
+          }
+        }
+        return;
+      }
+
+      if (node.type === "array") {
+        for (const item of node.items) {
+          collectDescriptionValueTypes(item, results);
+        }
+      }
+    };
+
+    const schemaKeywordKeys = new Set([
+      "$id",
+      "$schema",
+      "$defs",
+      "definitions",
+      "title",
+      "description",
+      "default",
+      "examples",
+      "type",
+      "properties",
+      "patternProperties",
+      "additionalProperties",
+      "propertyNames",
+      "required",
+      "items",
+      "contains",
+      "minContains",
+      "maxContains",
+      "minItems",
+      "maxItems",
+      "uniqueItems",
+      "minProperties",
+      "maxProperties",
+      "enum",
+      "const",
+      "oneOf",
+      "anyOf",
+      "allOf",
+      "not",
+      "if",
+      "then",
+      "else",
+      "format",
+      "minimum",
+      "maximum",
+      "exclusiveMinimum",
+      "exclusiveMaximum",
+      "multipleOf",
+      "minLength",
+      "maxLength",
+      "pattern",
+      "contentEncoding",
+      "contentMediaType",
+      "dependentRequired",
+      "dependentSchemas",
+    ]);
+
+    const collectSchemaKeywordKeys = (
+      node: MonacoJson.ASTNode,
+      results: MonacoJson.StringASTNode[],
+      inPropertiesMap: boolean,
+    ) => {
+      if (node.type === "object") {
+        for (const property of node.properties) {
+          const key = property.keyNode.value;
+          if (!inPropertiesMap && schemaKeywordKeys.has(key)) {
+            results.push(property.keyNode);
+          }
+
+          const isPropertiesMap =
+            key === "properties" ||
+            key === "patternProperties" ||
+            key === "$defs" ||
+            key === "definitions";
+
+          if (property.valueNode) {
+            collectSchemaKeywordKeys(
+              property.valueNode,
+              results,
+              isPropertiesMap,
+            );
+          }
+        }
+        return;
+      }
+
+      if (node.type === "array") {
+        for (const item of node.items) {
+          collectSchemaKeywordKeys(item, results, false);
+        }
+      }
+    };
+
+    const updateDecorations = async () => {
+      const model = editor.getModel();
+      if (!model) return;
+
+      const content = model.getValue();
+      if (!content.includes("\"required\"")) {
+        if (decorations.length > 0) {
+          decorations = editor.deltaDecorations(decorations, []);
+        }
+        return;
+      }
+
+      const currentRequest = ++requestId;
+      const version = model.getVersionId();
+
+      try {
+        const worker = await monaco.json.getWorker();
+        const client = await worker(model.uri);
+        const document = await client.parseJSONDocument(model.uri.toString());
+
+        if (disposed || currentRequest !== requestId) return;
+        const latestModel = editor.getModel();
+        if (!latestModel || latestModel.getVersionId() !== version) return;
+
+        const requiredNodes: MonacoJson.StringASTNode[] = [];
+        const typeNodes: Array<{
+          node: MonacoJson.StringASTNode;
+          className: string;
+        }> = [];
+        const keywordNodes: MonacoJson.StringASTNode[] = [];
+        const descriptionNodes: Array<{
+          node: MonacoJson.StringASTNode;
+          className: string;
+        }> = [];
+        const propertyNameNodes: Array<{
+          node: MonacoJson.StringASTNode;
+          className: string;
+        }> = [];
+        if (document?.root) {
+          collectRequiredStrings(document.root, requiredNodes);
+          collectSchemaTypeStrings(document.root, typeNodes);
+          collectPropertyNameTypes(document.root, propertyNameNodes);
+          collectSchemaKeywordKeys(document.root, keywordNodes, false);
+          collectDescriptionValueTypes(document.root, descriptionNodes);
+        }
+
+        const buildDecoration = (
+          node: MonacoJson.StringASTNode,
+          className: string,
+        ) => {
+          const start = model.getPositionAt(node.offset);
+          const end = model.getPositionAt(node.offset + node.length);
+          return {
+            range: new monaco.Range(
+              start.lineNumber,
+              start.column,
+              end.lineNumber,
+              end.column,
+            ),
+            options: {
+              inlineClassName: className,
+            },
+          };
+        };
+
+        const newDecorations = [
+          ...requiredNodes.map((node) =>
+            buildDecoration(node, "jsonjoy-required"),
+          ),
+          ...keywordNodes.map((node) =>
+            buildDecoration(node, "jsonjoy-schema-keyword"),
+          ),
+          ...typeNodes.map(({ node, className }) =>
+            buildDecoration(node, className),
+          ),
+          ...descriptionNodes.map(({ node, className }) =>
+            buildDecoration(node, className),
+          ),
+          ...propertyNameNodes.map(({ node, className }) =>
+            buildDecoration(node, className),
+          ),
+        ];
+
+        decorations = editor.deltaDecorations(decorations, newDecorations);
+      } catch (_error) {
+        if (!disposed && decorations.length > 0) {
+          decorations = editor.deltaDecorations(decorations, []);
+        }
+      }
+    };
+
+    const scheduleUpdate = () => {
+      void updateDecorations();
+    };
+
+    const contentListener = editor.onDidChangeModelContent(scheduleUpdate);
+    const modelListener = editor.onDidChangeModel(scheduleUpdate);
+
+    scheduleUpdate();
+
+    return () => {
+      disposed = true;
+      contentListener.dispose();
+      modelListener.dispose();
+      if (decorations.length > 0) {
+        editor.deltaDecorations(decorations, []);
+        decorations = [];
+      }
+    };
+  };
+
   // Helper to configure JSON language validation
   const configureJsonDefaults = (
     _monaco?: typeof Monaco,
     schema?: JSONSchema,
   ) => {
+    const jsonDefaults =
+      _monaco?.json?.jsonDefaults ?? MonacoModule.json?.jsonDefaults;
+    if (!jsonDefaults) {
+      return;
+    }
+
     // Create a new diagnostics options object
     const diagnosticsOptions: MonacoJson.DiagnosticsOptions = {
       validate: true,
@@ -193,13 +631,11 @@ export function useMonacoTheme() {
                 type: "object",
                 additionalProperties: true,
               },
-            },
+        },
           ],
     };
 
-    MonacoModule.json.jsonDefaults.setDiagnosticsOptions(
-      diagnosticsOptions,
-    );
+    jsonDefaults.setDiagnosticsOptions(diagnosticsOptions);
   };
 
   return {
@@ -207,6 +643,7 @@ export function useMonacoTheme() {
     currentTheme: isDarkMode ? "appDarkTheme" : "appLightTheme",
     defineMonacoThemes,
     configureJsonDefaults,
+    setupRequiredFieldHighlighting,
     defaultEditorOptions,
   };
 }

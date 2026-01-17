@@ -84,7 +84,7 @@ export function SchemaInferencer({
         <div className={styles.editorContainer}>
           <Editor
             height="450px"
-            defaultLanguage="json"
+            language="json"
             value={jsonInput}
             onChange={handleEditorChange}
             beforeMount={handleBeforeMount}
