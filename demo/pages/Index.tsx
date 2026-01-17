@@ -10,7 +10,7 @@ import {
   RefreshCw,
   User,
 } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Anchor,
   Badge,
@@ -18,7 +18,6 @@ import {
   Container,
   Group,
   Paper,
-  Select,
   SimpleGrid,
   Stack,
   Text,
@@ -28,8 +27,6 @@ import { exampleSchema } from "../../demo/utils/schemaExample.ts";
 import { JsonValidator } from "../../src/components/features/JsonValidator.tsx";
 import { SchemaInferencer } from "../../src/components/features/SchemaInferencer.tsx";
 import JsonSchemaEditor from "../../src/components/SchemaEditor/JsonSchemaEditor.tsx";
-import { en } from "../../src/i18n/locales/en.ts";
-import { TranslationContext } from "../../src/i18n/translation-context.ts";
 import type { JSONSchema } from "../../src/types/jsonSchema.ts";
 import styles from "./Index.module.css";
 
@@ -38,8 +35,6 @@ const Index = () => {
   const [readOnly, setReadOnly] = useState<boolean>(false);
   const [inferDialogOpen, setInferDialogOpen] = useState(false);
   const [validateDialogOpen, setValidateDialogOpen] = useState(false);
-  const [language, setLanguage] = useState("en");
-  const [translation, setTranslation] = useState(en);
 
   const handleReset = () => setSchema(exampleSchema);
 
@@ -60,89 +55,67 @@ const Index = () => {
     setValidateDialogOpen(true);
   };
 
-  const handleLanguageChange = (value: string) => {
-    setLanguage(value);
-    import(`../../src/i18n/locales/${value}.ts`).then((module) => {
-      setTranslation(module[value]);
-    });
-  };
-
   return (
-    <TranslationContext value={translation}>
-      <div className={`${styles.page} jsonjoy`}>
-        <div className={styles.accentTop} aria-hidden="true" />
-        <div className={styles.accentBottom} aria-hidden="true" />
+    <div className={`${styles.page} jsonjoy`}>
+      <div className={styles.accentTop} aria-hidden="true" />
+      <div className={styles.accentBottom} aria-hidden="true" />
 
-        <Container size="xl" className={styles.container}>
-          <Stack align="center" spacing="xl">
-            <Badge size="lg" variant="light" className={styles.heroBadge}>
-              <FileJson size={16} />
-              Easy Schema Builder
-            </Badge>
+      <Container size="xl" className={styles.container}>
+        <Stack align="center" spacing="xl">
+          <Badge size="lg" variant="light" className={styles.heroBadge}>
+            <FileJson size={16} />
+            Easy Schema Builder
+          </Badge>
 
-            <Title order={1} ta="center" className={styles.heroTitle}>
-              Create JSON Schemas <span>Visually</span>
-            </Title>
+          <Title order={1} ta="center" className={styles.heroTitle}>
+            Create JSON Schemas <span>Visually</span>
+          </Title>
 
-            <Text size="lg" c="dimmed" ta="center" maw={720}>
-              Design your data structure effortlessly without writing a single
-              line of code. Perfect for APIs, forms, and data validation.
-            </Text>
+          <Text size="lg" c="dimmed" ta="center" maw={720}>
+            Design your data structure effortlessly without writing a single
+            line of code. Perfect for APIs, forms, and data validation.
+          </Text>
 
-            <Group justify="center" gap="md" wrap="wrap">
-              <Button
-                variant="outline"
-                onClick={handleReset}
-                leftSection={<RefreshCw size={16} />}
-              >
-                Reset to Example
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleClear}
-                leftSection={<CirclePlus size={16} />}
-              >
-                Start from Scratch
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleInferSchema}
-                leftSection={<Code size={16} />}
-              >
-                Infer from JSON
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleValidateJson}
-                leftSection={<CheckCircle size={16} />}
-              >
-                Validate JSON
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleReadOnlyToggle}
-                leftSection={
-                  readOnly ? <Pencil size={16} /> : <PencilOff size={16} />
-                }
-              >
-                {readOnly ? "Writable" : "Read-Only"}
-              </Button>
-              <Select
-                value={language}
-                onChange={(value) => value && handleLanguageChange(value)}
-                data={[
-                  { value: "en", label: "English" },
-                  { value: "de", label: "German" },
-                  { value: "fr", label: "French" },
-                  { value: "ru", label: "Russian" },
-                  { value: "es", label: "Spanish" },
-                  { value: "zh", label: "Chinese" },
-                ]}
-                placeholder="Language"
-                size="sm"
-              />
-            </Group>
-          </Stack>
+          <Group justify="center" gap="md" wrap="wrap">
+            <Button
+              variant="outline"
+              onClick={handleReset}
+              leftSection={<RefreshCw size={16} />}
+            >
+              Reset to Example
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleClear}
+              leftSection={<CirclePlus size={16} />}
+            >
+              Start from Scratch
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleInferSchema}
+              leftSection={<Code size={16} />}
+            >
+              Infer from JSON
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleValidateJson}
+              leftSection={<CheckCircle size={16} />}
+            >
+              Validate JSON
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleReadOnlyToggle}
+              leftSection={
+                readOnly ? <Pencil size={16} /> : <PencilOff size={16} />
+              }
+            >
+              {readOnly ? "Writable" : "Read-Only"}
+            </Button>
+          </Group>
+        </Stack>
 
           <Stack mt="xl" spacing="xl">
             <JsonSchemaEditor
@@ -410,9 +383,8 @@ const Index = () => {
               ))}
             </Group>
           </Stack>
-        </Container>
-      </div>
-    </TranslationContext>
+      </Container>
+    </div>
   );
 };
 

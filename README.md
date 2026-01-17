@@ -82,35 +82,8 @@ you can set:
 
 ### Localization
 
-By default, the editor uses English. To localize, you need to set a language via the `TranslationContext`:
-
-```jsx
-import "jsonjoy-builder/styles.css";
-import { type JSONSchema, SchemaVisualEditor, TranslationContext, de } from "jsonjoy-builder";
-import { useState } from "react";
-
-export function App() {
-  const [schema, setSchema] = useState<JSONSchema>({});
-  return (
-    <TranslationContext value={de}>
-      <SchemaVisualEditor schema={schema} onChange={setSchema}/>
-    </TranslationContext>
-  );
-}
-```
-
-Currently we have localizations for English, German, French, Russian, Spanish and Chinese. You can define your own translation like this.
-If you do, consider opening a PR with the translations!
-
-```ts
-import { type Translation } from "jsonjoy-builder";
-
-const es: Translation = {
-	// add translations here (see type Translation for the available keys and default values)
-};
-```
-
-See also the [English localizations file](https://github.com/lovasoa/jsonjoy-builder/blob/main/src/i18n/locales/en.ts) for the default localizations.
+The UI text is English-only. Internationalization has been removed, so there is
+no built-in language switching.
 
 ### Development
 
