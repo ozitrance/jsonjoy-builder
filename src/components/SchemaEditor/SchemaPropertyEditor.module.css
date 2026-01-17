@@ -1,0 +1,108 @@
+.card {
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  margin-bottom: 12px;
+  transition: box-shadow 150ms ease, border-color 150ms ease;
+}
+
+.nested {
+  border-left: 3px solid color-mix(in srgb, var(--mantine-color-gray-3), white 20%);
+  margin-left: 0;
+}
+
+@media (min-width: 640px) {
+  .nested {
+    margin-left: 16px;
+  }
+}
+
+.row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  padding: 8px 12px;
+}
+
+.row:hover .hoverActions {
+  opacity: 1;
+}
+
+.expandButton {
+  color: var(--mantine-color-dimmed);
+  transition: color 150ms ease;
+}
+
+.expandButton:hover {
+  color: var(--mantine-color-text);
+}
+
+.nameButton,
+.descButton {
+  background: transparent;
+  border: none;
+  border-radius: var(--mantine-radius-sm);
+  cursor: text;
+  padding: 2px 6px;
+  text-align: left;
+  transition: background 150ms ease, box-shadow 150ms ease;
+}
+
+.nameButton:hover,
+.descButton:hover {
+  background: color-mix(in srgb, var(--mantine-color-gray-0), white 10%);
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+.nameButton {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.descButton {
+  color: var(--mantine-color-dimmed);
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.descButtonMuted {
+  color: color-mix(in srgb, var(--mantine-color-dimmed), transparent 40%);
+}
+
+.inlineInput {
+  max-width: 100%;
+}
+
+.typeGroup {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.requiredButton {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 8px;
+}
+
+.errorBadge {
+  font-family: var(--mantine-font-family-monospace);
+}
+
+.hoverActions {
+  align-items: center;
+  color: var(--mantine-color-dimmed);
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.details {
+  padding: 4px 12px 12px;
+}
+
+.detailsDesc {
+  padding-bottom: 8px;
+}

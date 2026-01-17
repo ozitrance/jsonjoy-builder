@@ -1,25 +1,18 @@
+import {
+  Badge,
+  Button,
+  Checkbox,
+  Modal,
+  Text,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
 import { CirclePlus, HelpCircle, Info } from "lucide-react";
 import { type FC, type FormEvent, useId, useState } from "react";
-import { Badge } from "../../components/ui/badge.tsx";
-import { Button } from "../../components/ui/button.tsx";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../../components/ui/dialog.tsx";
-import { Input } from "../../components/ui/input.tsx";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../../components/ui/tooltip.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
+import styles from "./AddFieldButton.module.css";
 
 interface AddFieldButtonProps {
   onAddField: (field: NewField) => void;
@@ -65,174 +58,146 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
       <Button
         type="button"
         onClick={() => setDialogOpen(true)}
-        variant={variant === "primary" ? "default" : "outline"}
+        variant={variant === "primary" ? "filled" : "outline"}
         size="sm"
-        className="flex items-center gap-1.5 group"
+        className={styles.button}
       >
         <CirclePlus
           size={16}
-          className="group-hover:scale-110 transition-transform"
+          className={styles.icon}
         />
         <span>{t.fieldAddNewButton}</span>
       </Button>
 
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="md:max-w-[1200px] max-h-[85vh] w-[95vw] p-4 sm:p-6 jsonjoy">
-          <DialogHeader className="mb-4">
-            <DialogTitle className="text-xl flex flex-wrap items-center gap-2">
+      <Modal
+        opened={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        size="xl"
+        centered
+        title={
+          <div className={styles.modalHeader}>
+            <Text fw={600} size="lg">
               {t.fieldAddNewLabel}
-              <Badge variant="secondary" className="text-xs">
-                {t.fieldAddNewBadge}
-              </Badge>
-            </DialogTitle>
-            <DialogDescription className="text-sm">
-              {t.fieldAddNewDescription}
-            </DialogDescription>
-          </DialogHeader>
+            </Text>
+            <Badge variant="light" size="sm">
+              {t.fieldAddNewBadge}
+            </Badge>
+          </div>
+        }
+        classNames={{ content: styles.modalContent }}
+      >
+        <Text className={styles.modalDescription}>
+          {t.fieldAddNewDescription}
+        </Text>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-4 min-w-[280px]">
-                <div>
-                  <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                    <label
-                      htmlFor={fieldNameId}
-                      className="text-sm font-medium"
-                    >
-                      {t.fieldNameLabel}
-                    </label>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 text-muted-foreground shrink-0" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-[90vw]">
-                          <p>{t.fieldNameTooltip}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                  <Input
-                    id={fieldNameId}
-                    value={fieldName}
-                    onChange={(e) => setFieldName(e.target.value)}
-                    placeholder={t.fieldNamePlaceholder}
-                    className="font-mono text-sm w-full"
-                    required
-                  />
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.grid}>
+            <div className={styles.fieldGroup}>
+              <div>
+                <div className={styles.labelRow}>
+                  <Text fw={500} size="sm">
+                    {t.fieldNameLabel}
+                  </Text>
+                  <Tooltip label={t.fieldNameTooltip} withArrow>
+                    <Info size={16} />
+                  </Tooltip>
                 </div>
-
-                <div>
-                  <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                    <label
-                      htmlFor={fieldDescId}
-                      className="text-sm font-medium"
-                    >
-                      {t.fieldDescription}
-                    </label>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 text-muted-foreground shrink-0" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-[90vw]">
-                          <p>{t.fieldDescriptionTooltip}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                  <Input
-                    id={fieldDescId}
-                    value={fieldDesc}
-                    onChange={(e) => setFieldDesc(e.target.value)}
-                    placeholder={t.fieldDescriptionPlaceholder}
-                    className="text-sm w-full"
-                  />
-                </div>
-
-                <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
-                  <input
-                    type="checkbox"
-                    id={fieldRequiredId}
-                    checked={fieldRequired}
-                    onChange={(e) => setFieldRequired(e.target.checked)}
-                    className="rounded border-gray-300 shrink-0"
-                  />
-                  <label htmlFor={fieldRequiredId} className="text-sm">
-                    {t.fieldRequiredLabel}
-                  </label>
-                </div>
+                <TextInput
+                  id={fieldNameId}
+                  value={fieldName}
+                  onChange={(e) => setFieldName(e.target.value)}
+                  placeholder={t.fieldNamePlaceholder}
+                  required
+                  size="sm"
+                />
               </div>
 
-              <div className="space-y-4 min-w-[280px]">
-                <div>
-                  <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                    <label
-                      htmlFor={fieldTypeId}
-                      className="text-sm font-medium"
-                    >
-                      {t.fieldType}
-                    </label>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground shrink-0" />
-                        </TooltipTrigger>
-                        <TooltipContent
-                          side="left"
-                          className="w-72 max-w-[90vw]"
-                        >
-                          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-                            <div>• {t.fieldTypeTooltipString}</div>
-                            <div>• {t.fieldTypeTooltipNumber}</div>
-                            <div>• {t.fieldTypeTooltipBoolean}</div>
-                            <div>• {t.fieldTypeTooltipObject}</div>
-                            <div className="col-span-2">
-                              • {t.fieldTypeTooltipArray}
-                            </div>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                  <SchemaTypeSelector
-                    id={fieldTypeId}
-                    value={fieldType}
-                    onChange={setFieldType}
-                  />
+              <div>
+                <div className={styles.labelRow}>
+                  <Text fw={500} size="sm">
+                    {t.fieldDescription}
+                  </Text>
+                  <Tooltip label={t.fieldDescriptionTooltip} withArrow>
+                    <Info size={16} />
+                  </Tooltip>
                 </div>
+                <TextInput
+                  id={fieldDescId}
+                  value={fieldDesc}
+                  onChange={(e) => setFieldDesc(e.target.value)}
+                  placeholder={t.fieldDescriptionPlaceholder}
+                  size="sm"
+                />
+              </div>
 
-                <div className="rounded-lg border bg-muted/50 p-3 hidden md:block">
-                  <p className="text-xs font-medium mb-2">
-                    {t.fieldTypeExample}
-                  </p>
-                  <code className="text-sm bg-background/80 p-2 rounded block overflow-x-auto">
-                    {fieldType === "string" && '"example"'}
-                    {fieldType === "number" && "42"}
-                    {fieldType === "boolean" && "true"}
-                    {fieldType === "object" && '{ "key": "value" }'}
-                    {fieldType === "array" && '["item1", "item2"]'}
-                  </code>
-                </div>
+              <div className={styles.checkboxCard}>
+                <Checkbox
+                  id={fieldRequiredId}
+                  checked={fieldRequired}
+                  onChange={(e) => setFieldRequired(e.currentTarget.checked)}
+                  label={t.fieldRequiredLabel}
+                />
               </div>
             </div>
 
-            <DialogFooter className="mt-6 gap-2 flex-wrap">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setDialogOpen(false)}
-              >
-                {t.fieldAddNewCancel}
-              </Button>
-              <Button type="submit" size="sm">
-                {t.fieldAddNewConfirm}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
+            <div className={styles.fieldGroup}>
+              <div>
+                <div className={styles.labelRow}>
+                  <Text fw={500} size="sm">
+                    {t.fieldType}
+                  </Text>
+                  <Tooltip
+                    label={
+                      <div>
+                        <div>• {t.fieldTypeTooltipString}</div>
+                        <div>• {t.fieldTypeTooltipNumber}</div>
+                        <div>• {t.fieldTypeTooltipBoolean}</div>
+                        <div>• {t.fieldTypeTooltipObject}</div>
+                        <div>• {t.fieldTypeTooltipArray}</div>
+                      </div>
+                    }
+                    withArrow
+                  >
+                    <HelpCircle size={16} />
+                  </Tooltip>
+                </div>
+                <SchemaTypeSelector
+                  id={fieldTypeId}
+                  value={fieldType}
+                  onChange={setFieldType}
+                />
+              </div>
+
+              <div className={styles.exampleCard}>
+                <Text className={styles.exampleTitle}>
+                  {t.fieldTypeExample}
+                </Text>
+                <code className={styles.exampleCode}>
+                  {fieldType === "string" && '"example"'}
+                  {fieldType === "number" && "42"}
+                  {fieldType === "boolean" && "true"}
+                  {fieldType === "object" && '{ "key": "value" }'}
+                  {fieldType === "array" && '["item1", "item2"]'}
+                </code>
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.footer}>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setDialogOpen(false)}
+            >
+              {t.fieldAddNewCancel}
+            </Button>
+            <Button type="submit" size="sm">
+              {t.fieldAddNewConfirm}
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </>
   );
 };

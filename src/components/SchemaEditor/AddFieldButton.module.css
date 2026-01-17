@@ -1,0 +1,102 @@
+.button {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.icon {
+  transition: transform 150ms ease;
+}
+
+.button:hover .icon {
+  transform: scale(1.08);
+}
+
+.modalContent {
+  font-family: var(--mantine-font-family);
+}
+
+.modalHeader {
+  margin-bottom: 12px;
+}
+
+.modalDescription {
+  color: var(--mantine-color-dimmed);
+  font-size: 0.9rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.labelRow {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.checkboxCard {
+  align-items: center;
+  background: var(--mantine-color-gray-0);
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+}
+
+.exampleCard {
+  background: var(--mantine-color-gray-0);
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  padding: 12px;
+}
+
+.exampleTitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.exampleCode {
+  background: color-mix(in srgb, var(--mantine-color-gray-0), white 20%);
+  border-radius: var(--mantine-radius-sm);
+  display: block;
+  font-size: 0.85rem;
+  overflow-x: auto;
+  padding: 8px;
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+@media (min-width: 768px) {
+  .exampleCard {
+    display: block;
+  }
+}
+
+@media (max-width: 767px) {
+  .exampleCard {
+    display: none;
+  }
+}

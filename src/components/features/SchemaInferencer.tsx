@@ -1,19 +1,12 @@
+import { Button, Modal, Text } from "@mantine/core";
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
-import { Button } from "../../components/ui/button.tsx";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "../../components/ui/dialog.tsx";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { createSchemaFromJson } from "../../lib/schema-inference.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
+import styles from "./SchemaInferencer.module.css";
 
 /** @public */
 export interface SchemaInferencerProps {
@@ -76,41 +69,45 @@ export function SchemaInferencer({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col jsonjoy">
-        <DialogHeader>
-          <DialogTitle>{t.inferrerTitle}</DialogTitle>
-          <DialogDescription>{t.inferrerDescription}</DialogDescription>
-        </DialogHeader>
-        <div className="flex-1 min-h-0 py-4 flex flex-col">
-          <div className="border rounded-md flex-1 overflow-hidden h-full">
-            <Editor
-              height="450px"
-              defaultLanguage="json"
-              value={jsonInput}
-              onChange={handleEditorChange}
-              beforeMount={handleBeforeMount}
-              onMount={handleEditorDidMount}
-              options={defaultEditorOptions}
-              theme={currentTheme}
-              loading={
-                <div className="flex items-center justify-center h-full w-full bg-secondary/30">
-                  <Loader2 className="h-6 w-6 animate-spin" />
-                </div>
-              }
-            />
-          </div>
-          {error && <p className="text-sm text-destructive mt-2">{error}</p>}
+    <Modal
+      opened={open}
+      onClose={handleClose}
+      size="lg"
+      title={t.inferrerTitle}
+      classNames={{ content: styles.modalContent }}
+      centered
+    >
+      <Text size="sm" c="dimmed">
+        {t.inferrerDescription}
+      </Text>
+      <div className={styles.body}>
+        <div className={styles.editorContainer}>
+          <Editor
+            height="450px"
+            defaultLanguage="json"
+            value={jsonInput}
+            onChange={handleEditorChange}
+            beforeMount={handleBeforeMount}
+            onMount={handleEditorDidMount}
+            options={defaultEditorOptions}
+            theme={currentTheme}
+            loading={
+              <div className={styles.loader}>
+                <Loader2 size={24} className="jsonjoy-spin" />
+              </div>
+            }
+          />
         </div>
-        <DialogFooter>
-          <Button type="button" variant="outline" onClick={handleClose}>
-            {t.inferrerCancel}
-          </Button>
-          <Button type="button" onClick={inferSchemaFromJson}>
-            {t.inferrerGenerate}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        {error && <p className={styles.error}>{error}</p>}
+      </div>
+      <div className={styles.footer}>
+        <Button type="button" variant="outline" onClick={handleClose}>
+          {t.inferrerCancel}
+        </Button>
+        <Button type="button" onClick={inferSchemaFromJson}>
+          {t.inferrerGenerate}
+        </Button>
+      </div>
+    </Modal>
   );
 }

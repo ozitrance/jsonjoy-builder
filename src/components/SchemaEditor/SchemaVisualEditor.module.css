@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+  padding: 16px;
+}
+
+.actionRow {
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+}
+
+.emptyState {
+  color: var(--mantine-color-dimmed);
+  padding: 40px 0;
+  text-align: center;
+}
+
+.emptyStateTitle {
+  margin-bottom: 12px;
+}

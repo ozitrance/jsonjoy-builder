@@ -1,7 +1,5 @@
+import { Switch, Text, TextInput } from "@mantine/core";
 import { useId, useMemo, useState } from "react";
-import { Input } from "../../../components/ui/input.tsx";
-import { Label } from "../../../components/ui/label.tsx";
-import { Switch } from "../../../components/ui/switch.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import { getArrayItemsSchema } from "../../../lib/schemaEditor.ts";
 import { cn } from "../../../lib/utils.ts";
@@ -16,6 +14,7 @@ import {
 import TypeDropdown from "../TypeDropdown.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
 import TypeEditor from "../TypeEditor.tsx";
+import styles from "./TypeEditors.module.css";
 
 const ArrayEditor: React.FC<TypeEditorProps> = ({
   schema,
@@ -131,104 +130,79 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
   );
 
   return (
-    <div className="space-y-6">
+    <div className={styles.stack}>
       {/* Array validation settings */}
       {(!readOnly || !!maxItems || !!minItems) && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className={styles.grid}>
           {(!readOnly || !!minItems) && (
-            <div className="space-y-2">
-              <Label
-                htmlFor={minItemsId}
-                className={
-                  (!!minMaxError || !!minItemsError) && "text-destructive"
-                }
-              >
-                {t.arrayMinimumLabel}
-              </Label>
-              <Input
-                id={minItemsId}
-                type="number"
-                min={0}
-                value={minItems ?? ""}
-                onChange={(e) => {
-                  const value = e.target.value
-                    ? Number(e.target.value)
-                    : undefined;
-                  setMinItems(value);
-                  // Don't update immediately to avoid too many rerenders
-                }}
-                onBlur={handleValidationChange}
-                placeholder={t.arrayMinimumPlaceholder}
-                className={cn("h-8", !!minMaxError && "border-destructive")}
-              />
-            </div>
+            <TextInput
+              id={minItemsId}
+              type="number"
+              min={0}
+              value={minItems ?? ""}
+              onChange={(e) => {
+                const value = e.target.value
+                  ? Number(e.target.value)
+                  : undefined;
+                setMinItems(value);
+                // Don't update immediately to avoid too many rerenders
+              }}
+              onBlur={handleValidationChange}
+              label={t.arrayMinimumLabel}
+              placeholder={t.arrayMinimumPlaceholder}
+              error={minMaxError || minItemsError || undefined}
+              size="xs"
+            />
           )}
 
           {(!readOnly || !!maxItems) && (
-            <div className="space-y-2">
-              <Label
-                htmlFor={maxItemsId}
-                className={
-                  (!!minMaxError || !!maxItemsError) && "text-destructive"
-                }
-              >
-                {t.arrayMaximumLabel}
-              </Label>
-              <Input
-                id={maxItemsId}
-                type="number"
-                min={0}
-                value={maxItems ?? ""}
-                onChange={(e) => {
-                  const value = e.target.value
-                    ? Number(e.target.value)
-                    : undefined;
-                  setMaxItems(value);
-                  // Don't update immediately to avoid too many rerenders
-                }}
-                onBlur={handleValidationChange}
-                placeholder={t.arrayMaximumPlaceholder}
-                className={cn("h-8", !!minMaxError && "border-destructive")}
-              />
-            </div>
-          )}
-          {(!!minMaxError || !!minItemsError || !!maxItemsError) && (
-            <div className="text-xs text-destructive italic md:col-span-2 whitespace-pre-line">
-              {[minMaxError, minItemsError ?? maxItemsError]
-                .filter(Boolean)
-                .join("\n")}
-            </div>
+            <TextInput
+              id={maxItemsId}
+              type="number"
+              min={0}
+              value={maxItems ?? ""}
+              onChange={(e) => {
+                const value = e.target.value
+                  ? Number(e.target.value)
+                  : undefined;
+                setMaxItems(value);
+                // Don't update immediately to avoid too many rerenders
+              }}
+              onBlur={handleValidationChange}
+              label={t.arrayMaximumLabel}
+              placeholder={t.arrayMaximumPlaceholder}
+              error={minMaxError || maxItemsError || undefined}
+              size="xs"
+            />
           )}
         </div>
       )}
 
       {(!readOnly || !!uniqueItems) && (
-        <div className="flex items-center space-x-2">
-          <Switch
-            id={uniqueItemsId}
-            checked={uniqueItems}
-            onCheckedChange={(checked) => {
-              setUniqueItems(checked);
-              onChange(buildValidationProps({ uniqueItems: checked }));
-            }}
-          />
-          <Label htmlFor={uniqueItemsId} className="cursor-pointer">
-            {t.arrayForceUniqueItemsLabel}
-          </Label>
-        </div>
+        <Switch
+          id={uniqueItemsId}
+          checked={uniqueItems}
+          onChange={(event) => {
+            setUniqueItems(event.currentTarget.checked);
+            onChange(buildValidationProps({ uniqueItems: event.currentTarget.checked }));
+          }}
+          label={t.arrayForceUniqueItemsLabel}
+        />
       )}
 
       {/* Array item type editor */}
       <div
         className={cn(
-          "space-y-2 pt-4 border-border/40",
+          styles.section,
           !readOnly || !!minItems || !!maxItems || !!uniqueItems
-            ? "border-t"
+            ? styles.divider
             : null,
         )}
       >
-        <div className="flex items-center justify-between mb-4">
-          <Label>{t.arrayItemTypeLabel}</Label>
+        <div className={styles.enumActions}>
+          <Text size="sm" fw={500}>
+            {t.arrayItemTypeLabel}
+          </Text>
           <TypeDropdown
             readOnly={readOnly}
             value={itemType}

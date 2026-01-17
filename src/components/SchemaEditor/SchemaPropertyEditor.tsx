@@ -1,6 +1,6 @@
+import { ActionIcon, Badge, Button, Text, TextInput } from "@mantine/core";
 import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Input } from "../../components/ui/input.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type {
@@ -14,9 +14,9 @@ import {
   withObjectSchema,
 } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
-import { Badge } from "../ui/badge.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
 import TypeEditor from "./TypeEditor.tsx";
+import styles from "./SchemaPropertyEditor.module.css";
 
 export interface SchemaPropertyEditorProps {
   name: string;
@@ -95,139 +95,134 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
 
   return (
     <div
-      className={cn(
-        "mb-2 animate-in rounded-lg border transition-all duration-200",
-        depth > 0 && "ml-0 sm:ml-4 border-l border-l-border/40",
-      )}
+      className={cn(styles.card, depth > 0 && styles.nested)}
     >
-      <div className="relative json-field-row justify-between group">
-        <div className="flex items-center gap-2 grow min-w-0">
-          {/* Expand/collapse button */}
-          <button
-            type="button"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            onClick={() => setExpanded(!expanded)}
-            aria-label={expanded ? t.collapse : t.expand}
-          >
-            {expanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-          </button>
+      <div className={styles.row}>
+        <ActionIcon
+          type="button"
+          variant="subtle"
+          onClick={() => setExpanded(!expanded)}
+          aria-label={expanded ? t.collapse : t.expand}
+          className={styles.expandButton}
+        >
+          {expanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+        </ActionIcon>
 
-          {/* Property name */}
-          <div className="flex items-center gap-2 grow min-w-0 overflow-visible">
-            <div className="flex items-center gap-2 min-w-0 grow overflow-visible">
-              {!readOnly && isEditingName ? (
-                <Input
-                  value={tempName}
-                  onChange={(e) => setTempName(e.target.value)}
-                  onBlur={handleNameSubmit}
-                  onKeyDown={(e) => e.key === "Enter" && handleNameSubmit()}
-                  className="h-8 text-sm font-medium min-w-[120px] max-w-full z-10"
-                  autoFocus
-                  onFocus={(e) => e.target.select()}
-                />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsEditingName(true)}
-                  onKeyDown={(e) => e.key === "Enter" && setIsEditingName(true)}
-                  className="json-field-label font-medium cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all text-left truncate min-w-[80px] max-w-[50%]"
-                >
-                  {name}
-                </button>
-              )}
-
-              {/* Description */}
-              {!readOnly && isEditingDesc ? (
-                <Input
-                  value={tempDesc}
-                  onChange={(e) => setTempDesc(e.target.value)}
-                  onBlur={handleDescSubmit}
-                  onKeyDown={(e) => e.key === "Enter" && handleDescSubmit()}
-                  placeholder={t.propertyDescriptionPlaceholder}
-                  className="h-8 text-xs text-muted-foreground italic flex-1 min-w-[150px] z-10"
-                  autoFocus
-                  onFocus={(e) => e.target.select()}
-                />
-              ) : tempDesc ? (
-                <button
-                  type="button"
-                  onClick={() => setIsEditingDesc(true)}
-                  onKeyDown={(e) => e.key === "Enter" && setIsEditingDesc(true)}
-                  className="text-xs text-muted-foreground italic cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all text-left truncate flex-1 max-w-[40%] mr-2"
-                >
-                  {tempDesc}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsEditingDesc(true)}
-                  onKeyDown={(e) => e.key === "Enter" && setIsEditingDesc(true)}
-                  className="text-xs text-muted-foreground/50 italic cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all opacity-0 group-hover:opacity-100 text-left truncate flex-1 max-w-[40%] mr-2"
-                >
-                  {t.propertyDescriptionButton}
-                </button>
-              )}
-            </div>
-
-            {/* Type display */}
-            <div className="flex items-center gap-2 justify-end shrink-0">
-              <TypeDropdown
-                value={type}
-                readOnly={readOnly}
-                onChange={(newType) => {
-                  onSchemaChange({
-                    ...asObjectSchema(schema),
-                    type: newType,
-                  });
-                }}
-              />
-
-              {/* Required toggle */}
-              <button
-                type="button"
-                onClick={() => !readOnly && onRequiredChange(!required)}
-                className={cn(
-                  "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center cursor-pointer hover:shadow-xs hover:ring-2 hover:ring-ring/30 active:scale-95 transition-all whitespace-nowrap",
-                  required
-                    ? "bg-red-50 text-red-500"
-                    : "bg-secondary text-muted-foreground",
-                )}
-              >
-                {required ? t.propertyRequired : t.propertyOptional}
-              </button>
-            </div>
-          </div>
+        <div className={styles.inlineInput}>
+          {!readOnly && isEditingName ? (
+            <TextInput
+              value={tempName}
+              onChange={(e) => setTempName(e.target.value)}
+              onBlur={handleNameSubmit}
+              onKeyDown={(e) => e.key === "Enter" && handleNameSubmit()}
+              size="xs"
+              autoFocus
+              onFocus={(e) => e.target.select()}
+            />
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsEditingName(true)}
+              onKeyDown={(e) => e.key === "Enter" && setIsEditingName(true)}
+              className={styles.nameButton}
+            >
+              {name}
+            </button>
+          )}
         </div>
 
-        {/* Error badge */}
+        <div className={styles.inlineInput}>
+          {!readOnly && isEditingDesc ? (
+            <TextInput
+              value={tempDesc}
+              onChange={(e) => setTempDesc(e.target.value)}
+              onBlur={handleDescSubmit}
+              onKeyDown={(e) => e.key === "Enter" && handleDescSubmit()}
+              placeholder={t.propertyDescriptionPlaceholder}
+              size="xs"
+              autoFocus
+              onFocus={(e) => e.target.select()}
+            />
+          ) : tempDesc ? (
+            <button
+              type="button"
+              onClick={() => setIsEditingDesc(true)}
+              onKeyDown={(e) => e.key === "Enter" && setIsEditingDesc(true)}
+              className={styles.descButton}
+            >
+              {tempDesc}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsEditingDesc(true)}
+              onKeyDown={(e) => e.key === "Enter" && setIsEditingDesc(true)}
+              className={cn(styles.descButton, styles.descButtonMuted)}
+            >
+              {t.propertyDescriptionButton}
+            </button>
+          )}
+        </div>
+
+        <div className={styles.typeGroup}>
+          <TypeDropdown
+            value={type}
+            readOnly={readOnly}
+            onChange={(newType) => {
+              onSchemaChange({
+                ...asObjectSchema(schema),
+                type: newType,
+              });
+            }}
+          />
+
+          <Button
+            type="button"
+            size="xs"
+            variant="light"
+            color={required ? "red" : "gray"}
+            onClick={() => !readOnly && onRequiredChange(!required)}
+            disabled={readOnly}
+            className={styles.requiredButton}
+          >
+            {required ? t.propertyRequired : t.propertyOptional}
+          </Button>
+        </div>
+
         {validationNode?.cumulativeChildrenErrors > 0 && (
           <Badge
-            className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums justify-center"
-            variant="destructive"
+            color="red"
+            size="sm"
+            radius="xl"
+            className={styles.errorBadge}
           >
             {validationNode.cumulativeChildrenErrors}
           </Badge>
         )}
 
-        {/* Delete button */}
         {!readOnly && (
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <button
+          <div className={styles.hoverActions}>
+            <ActionIcon
               type="button"
+              variant="subtle"
+              color="red"
               onClick={onDelete}
-              className="p-1 rounded-md hover:bg-secondary hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
               aria-label={t.propertyDelete}
             >
               <X size={16} />
-            </button>
+            </ActionIcon>
           </div>
         )}
       </div>
 
       {/* Type-specific editor */}
       {expanded && (
-        <div className="pt-1 pb-2 px-2 sm:px-3 animate-in">
-          {readOnly && tempDesc && <p className="pb-2">{tempDesc}</p>}
+        <div className={styles.details}>
+          {readOnly && tempDesc && (
+            <Text size="sm" className={styles.detailsDesc}>
+              {tempDesc}
+            </Text>
+          )}
           <TypeEditor
             schema={schema}
             readOnly={readOnly}

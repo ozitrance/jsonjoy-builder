@@ -1,10 +1,10 @@
+import { Switch, Text } from "@mantine/core";
 import { useId } from "react";
-import { Label } from "../../../components/ui/label.tsx";
-import { Switch } from "../../../components/ui/switch.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import type { ObjectJSONSchema } from "../../../types/jsonSchema.ts";
 import { withObjectSchema } from "../../../types/jsonSchema.ts";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
+import styles from "./TypeEditors.module.css";
 
 const BooleanEditor: React.FC<TypeEditorProps> = ({
   schema,
@@ -80,54 +80,46 @@ const BooleanEditor: React.FC<TypeEditorProps> = ({
   const hasEnum = enumValues && enumValues.length > 0;
 
   return (
-    <div className="space-y-4">
+    <div className={styles.stack}>
       {readOnly && !hasEnum && (
-        <p className="text-sm text-muted-foreground italic">
-          {t.booleanNoConstraint}
-        </p>
+        <Text className={styles.helperText}>{t.booleanNoConstraint}</Text>
       )}
       {(!readOnly || !allowsTrue || !allowsFalse) && (
-        <div className="space-y-2 pt-2">
+        <div className={styles.section}>
           {(!readOnly || hasEnum) && (
             <>
-              <Label>{t.booleanAllowedValuesLabel}</Label>
+              <Text size="sm" fw={500}>
+                {t.booleanAllowedValuesLabel}
+              </Text>
 
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id={allowTrueId}
-                    checked={allowsTrue}
-                    disabled={readOnly}
-                    onCheckedChange={(checked) =>
-                      handleAllowedChange(true, checked)
-                    }
-                  />
-                  <Label htmlFor={allowTrueId} className="cursor-pointer">
-                    {t.booleanAllowTrueLabel}
-                  </Label>
-                </div>
+              <div className={styles.stack}>
+                <Switch
+                  id={allowTrueId}
+                  checked={allowsTrue}
+                  disabled={readOnly}
+                  onChange={(event) =>
+                    handleAllowedChange(true, event.currentTarget.checked)
+                  }
+                  label={t.booleanAllowTrueLabel}
+                />
 
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id={allowFalseId}
-                    checked={allowsFalse}
-                    disabled={readOnly}
-                    onCheckedChange={(checked) =>
-                      handleAllowedChange(false, checked)
-                    }
-                  />
-                  <Label htmlFor={allowFalseId} className="cursor-pointer">
-                    {t.booleanAllowFalseLabel}
-                  </Label>
-                </div>
+                <Switch
+                  id={allowFalseId}
+                  checked={allowsFalse}
+                  disabled={readOnly}
+                  onChange={(event) =>
+                    handleAllowedChange(false, event.currentTarget.checked)
+                  }
+                  label={t.booleanAllowFalseLabel}
+                />
               </div>
             </>
           )}
 
           {!allowsTrue && !allowsFalse && (
-            <p className="text-xs text-amber-600 mt-2">
+            <Text className={styles.warningText}>
               {t.booleanNeitherWarning}
-            </p>
+            </Text>
           )}
         </div>
       )}

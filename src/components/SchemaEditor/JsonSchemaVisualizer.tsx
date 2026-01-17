@@ -1,3 +1,4 @@
+import { ActionIcon, Text } from "@mantine/core";
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Download, FileJson, Loader2 } from "lucide-react";
 import { type FC, useRef } from "react";
@@ -5,6 +6,7 @@ import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
+import styles from "./JsonSchemaVisualizer.module.css";
 
 /** @public */
 export interface JsonSchemaVisualizerProps {
@@ -66,28 +68,22 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
   };
 
   return (
-    <div
-      className={cn(
-        "relative overflow-hidden h-full flex flex-col",
-        className,
-        "jsonjoy",
-      )}
-    >
-      <div className="flex items-center justify-between bg-secondary/80 backdrop-blur-xs px-4 py-2 border-b shrink-0">
-        <div className="flex items-center gap-2">
+    <div className={cn(styles.container, className, "jsonjoy")}>
+      <div className={styles.header}>
+        <div className={styles.headerLeft}>
           <FileJson size={18} />
-          <span className="font-medium text-sm">{t.visualizerSource}</span>
+          <Text className={styles.title}>{t.visualizerSource}</Text>
         </div>
-        <button
+        <ActionIcon
           type="button"
+          variant="subtle"
           onClick={handleDownload}
-          className="p-1.5 hover:bg-secondary rounded-md transition-colors"
-          title={t.visualizerDownloadTitle}
+          aria-label={t.visualizerDownloadTitle}
         >
           <Download size={16} />
-        </button>
+        </ActionIcon>
       </div>
-      <div className="grow flex min-h-0">
+      <div className={styles.editorArea}>
         <Editor
           height="100%"
           defaultLanguage="json"
@@ -95,10 +91,10 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
           onChange={handleEditorChange}
           beforeMount={handleBeforeMount}
           onMount={handleEditorDidMount}
-          className="monaco-editor-container w-full h-full"
+          className={styles.editorContainer}
           loading={
-            <div className="flex items-center justify-center h-full w-full bg-secondary/30">
-              <Loader2 className="h-6 w-6 animate-spin" />
+            <div className={styles.loader}>
+              <Loader2 size={24} className="jsonjoy-spin" />
             </div>
           }
           options={defaultEditorOptions}

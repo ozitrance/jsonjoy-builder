@@ -1,0 +1,77 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.divider {
+  border-top: 1px solid var(--mantine-color-gray-3);
+  padding-top: 12px;
+}
+
+.helperText {
+  color: var(--mantine-color-dimmed);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.errorText {
+  color: var(--mantine-color-red-6);
+  font-size: 0.75rem;
+  font-style: italic;
+  white-space: pre-line;
+}
+
+.warningText {
+  color: var(--mantine-color-yellow-7);
+  font-size: 0.75rem;
+}
+
+.enumList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.enumItem {
+  align-items: center;
+  background: var(--mantine-color-gray-0);
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px 8px;
+}
+
+.enumValue {
+  font-size: 0.75rem;
+}
+
+.enumActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.enumInput {
+  flex: 1;
+}
+
+.emptyState {
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  padding: 8px;
+  text-align: center;
+}

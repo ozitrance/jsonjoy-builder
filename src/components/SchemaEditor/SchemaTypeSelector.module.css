@@ -1,0 +1,37 @@
+.grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+}
+
+.option {
+  border: 1px solid var(--mantine-color-gray-3);
+  border-radius: var(--mantine-radius-md);
+  padding: 10px;
+  text-align: left;
+  transition: border-color 150ms ease, background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.option:hover {
+  background: var(--mantine-color-gray-0);
+  border-color: var(--mantine-color-blue-4);
+}
+
+.optionSelected {
+  background: color-mix(in srgb, var(--mantine-color-blue-0), white 20%);
+  border-color: var(--mantine-color-blue-5);
+  box-shadow: var(--mantine-shadow-xs);
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.description {
+  color: var(--mantine-color-dimmed);
+  font-size: 0.75rem;
+  line-height: 1.2;
+}

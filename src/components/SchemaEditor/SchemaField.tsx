@@ -12,6 +12,7 @@ import {
   withObjectSchema,
 } from "../../types/jsonSchema.ts";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
+import styles from "./SchemaField.module.css";
 
 // This component is now just a simple wrapper around SchemaPropertyEditor
 // to maintain backward compatibility during migration
@@ -139,11 +140,11 @@ export const ExpandButton: React.FC<ExpandButtonProps> = ({
   return (
     <button
       type="button"
-      className="text-muted-foreground hover:text-foreground transition-colors"
+      className={styles.expandButton}
       onClick={onClick}
       aria-label={expanded ? t.collapse : t.expand}
     >
-      <Suspense fallback={<div className="w-[18px] h-[18px]" />}>
+      <Suspense fallback={<div style={{ width: 18, height: 18 }} />}>
         {expanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
       </Suspense>
     </button>
@@ -162,14 +163,14 @@ export const FieldActions: React.FC<FieldActionsProps> = ({ onDelete }) => {
   );
 
   return (
-    <div className="flex items-center gap-1 text-muted-foreground">
+    <div className={styles.actions}>
       <button
         type="button"
         onClick={onDelete}
-        className="p-1 rounded-md hover:bg-secondary hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+        className={styles.deleteButton}
         aria-label={t.fieldDelete}
       >
-        <Suspense fallback={<div className="w-[16px] h-[16px]" />}>
+        <Suspense fallback={<div style={{ width: 16, height: 16 }} />}>
           <X size={16} />
         </Suspense>
       </button>

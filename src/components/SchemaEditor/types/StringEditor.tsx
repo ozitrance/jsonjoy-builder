@@ -1,14 +1,6 @@
+import { ActionIcon, Button, Select, Text, TextInput } from "@mantine/core";
 import { X } from "lucide-react";
 import { useId, useMemo, useState } from "react";
-import { Input } from "../../../components/ui/input.tsx";
-import { Label } from "../../../components/ui/label.tsx";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../components/ui/select.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import { cn } from "../../../lib/utils.ts";
 import type { ObjectJSONSchema } from "../../../types/jsonSchema.ts";
@@ -17,6 +9,7 @@ import {
   withObjectSchema,
 } from "../../../types/jsonSchema.ts";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
+import styles from "./TypeEditors.module.css";
 
 type Property = "enum" | "minLength" | "maxLength" | "pattern" | "format";
 
@@ -151,190 +144,147 @@ const StringEditor: React.FC<TypeEditorProps> = ({
     enumValues.length > 0;
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+    <div className={styles.stack}>
+      <div className={styles.grid}>
         {readOnly && !needsDetail && (
-          <p className="text-sm text-muted-foreground italic">
-            {t.stringNoConstraint}
-          </p>
+          <Text className={styles.helperText}>{t.stringNoConstraint}</Text>
         )}
 
         {(!readOnly || minLengthValue !== "") && (
-          <div className="space-y-2">
-            <Label
-              htmlFor={minLengthId}
-              className={
-                (!!minMaxError || !!minLengthError) && "text-destructive"
-              }
-            >
-              {t.stringMinimumLengthLabel}
-            </Label>
-            <Input
-              id={minLengthId}
-              type="number"
-              min={0}
-              value={minLengthValue}
-              disabled={readOnly}
-              onChange={(e) => {
-                const value = e.target.value
-                  ? Number(e.target.value)
-                  : undefined;
-                handleValidationChange("minLength", value);
-              }}
-              placeholder={t.stringMinimumLengthPlaceholder}
-              className={cn(
-                "h-8",
-                (!!minMaxError || !!minLengthError) && "border-destructive",
-              )}
-            />
-          </div>
+          <TextInput
+            id={minLengthId}
+            type="number"
+            min={0}
+            value={minLengthValue}
+            disabled={readOnly}
+            onChange={(e) => {
+              const value = e.target.value
+                ? Number(e.target.value)
+                : undefined;
+              handleValidationChange("minLength", value);
+            }}
+            label={t.stringMinimumLengthLabel}
+            placeholder={t.stringMinimumLengthPlaceholder}
+            error={minMaxError || minLengthError || undefined}
+            size="xs"
+          />
         )}
 
         {(!readOnly || maxLengthValue !== "") && (
-          <div className="space-y-2">
-            <Label
-              htmlFor={maxLengthId}
-              className={
-                (!!minMaxError || !!maxLengthError) && "text-destructive"
-              }
-            >
-              {t.stringMaximumLengthLabel}
-            </Label>
-            <Input
-              id={maxLengthId}
-              type="number"
-              min={0}
-              disabled={readOnly}
-              value={maxLengthValue}
-              onChange={(e) => {
-                const value = e.target.value
-                  ? Number(e.target.value)
-                  : undefined;
-                handleValidationChange("maxLength", value);
-              }}
-              placeholder={t.stringMaximumLengthPlaceholder}
-              className={cn(
-                "h-8",
-                (!!minMaxError || !!maxLengthError) && "border-destructive",
-              )}
-            />
-          </div>
-        )}
-        {(!!minMaxError || !!minLengthError || !!maxLengthError) && (
-          <div className="text-xs text-destructive italic md:col-span-2 whitespace-pre-line">
-            {[minMaxError, minLengthError ?? maxLengthError]
-              .filter(Boolean)
-              .join("\n")}
-          </div>
+          <TextInput
+            id={maxLengthId}
+            type="number"
+            min={0}
+            disabled={readOnly}
+            value={maxLengthValue}
+            onChange={(e) => {
+              const value = e.target.value
+                ? Number(e.target.value)
+                : undefined;
+              handleValidationChange("maxLength", value);
+            }}
+            label={t.stringMaximumLengthLabel}
+            placeholder={t.stringMaximumLengthPlaceholder}
+            error={minMaxError || maxLengthError || undefined}
+            size="xs"
+          />
         )}
       </div>
 
       {(!readOnly || patternValue !== "") && (
-        <div className="space-y-2">
-          <Label
-            htmlFor={patternId}
-            className={!!patternError && "text-destructive"}
-          >
-            {t.stringPatternLabel}
-          </Label>
-          <Input
-            id={patternId}
-            type="text"
-            value={patternValue}
-            onChange={(e) => {
-              const value = e.target.value || undefined;
-              handleValidationChange("pattern", value);
-            }}
-            placeholder={t.stringPatternPlaceholder}
-            className="h-8"
-          />
-        </div>
+        <TextInput
+          id={patternId}
+          type="text"
+          value={patternValue}
+          onChange={(e) => {
+            const value = e.target.value || undefined;
+            handleValidationChange("pattern", value);
+          }}
+          label={t.stringPatternLabel}
+          placeholder={t.stringPatternPlaceholder}
+          error={patternError || undefined}
+          size="xs"
+        />
       )}
 
       {(!readOnly || formatValue !== "none") && (
-        <div className="space-y-2">
-          <Label
-            htmlFor={formatId}
-            className={!!formatError && "text-destructive"}
-          >
-            {t.stringFormatLabel}
-          </Label>
-          <Select
-            value={formatValue}
-            onValueChange={(value) => {
-              handleValidationChange(
-                "format",
-                value === "none" ? undefined : value,
-              );
-            }}
-          >
-            <SelectTrigger id={formatId} className="h-8">
-              <SelectValue placeholder={t.stringFormatSelectPlaceholder} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">{t.stringFormatNone}</SelectItem>
-              <SelectItem value="date-time">
-                {t.stringFormatDateTime}
-              </SelectItem>
-              <SelectItem value="date">{t.stringFormatDate}</SelectItem>
-              <SelectItem value="time">{t.stringFormatTime}</SelectItem>
-              <SelectItem value="email">{t.stringFormatEmail}</SelectItem>
-              <SelectItem value="uri">{t.stringFormatUri}</SelectItem>
-              <SelectItem value="uuid">{t.stringFormatUuid}</SelectItem>
-              <SelectItem value="hostname">{t.stringFormatHostname}</SelectItem>
-              <SelectItem value="ipv4">{t.stringFormatIpv4}</SelectItem>
-              <SelectItem value="ipv6">{t.stringFormatIpv6}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        <Select
+          id={formatId}
+          value={formatValue}
+          onChange={(value) => {
+            handleValidationChange(
+              "format",
+              value === "none" || value === null ? undefined : value,
+            );
+          }}
+          label={t.stringFormatLabel}
+          placeholder={t.stringFormatSelectPlaceholder}
+          data={[
+            { value: "none", label: t.stringFormatNone },
+            { value: "date-time", label: t.stringFormatDateTime },
+            { value: "date", label: t.stringFormatDate },
+            { value: "time", label: t.stringFormatTime },
+            { value: "email", label: t.stringFormatEmail },
+            { value: "uri", label: t.stringFormatUri },
+            { value: "uuid", label: t.stringFormatUuid },
+            { value: "hostname", label: t.stringFormatHostname },
+            { value: "ipv4", label: t.stringFormatIpv4 },
+            { value: "ipv6", label: t.stringFormatIpv6 },
+          ]}
+          error={formatError || undefined}
+          size="xs"
+        />
       )}
 
       {(!readOnly || enumValues.length > 0) && (
-        <div className="space-y-2 pt-2 border-t border-border/40">
-          <Label>{t.stringAllowedValuesEnumLabel}</Label>
+        <div className={cn(styles.section, styles.divider)}>
+          <Text size="sm" fw={500}>
+            {t.stringAllowedValuesEnumLabel}
+          </Text>
 
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className={styles.enumList}>
             {enumValues.length > 0 ? (
               enumValues.map((value) => (
-                <div
-                  key={`enum-string-${value}`}
-                  className="flex items-center bg-muted/40 border rounded-md px-2 py-1 text-xs"
-                >
-                  <span className="mr-1">{value}</span>
-                  <button
+                <div key={`enum-string-${value}`} className={styles.enumItem}>
+                  <span className={styles.enumValue}>{value}</span>
+                  <ActionIcon
+                    variant="subtle"
+                    color="red"
+                    size="xs"
                     type="button"
                     onClick={() =>
                       handleRemoveEnumValue(enumValues.indexOf(value))
                     }
-                    className="text-muted-foreground hover:text-destructive"
                   >
                     <X size={12} />
-                  </button>
+                  </ActionIcon>
                 </div>
               ))
             ) : (
-              <p className="text-xs text-muted-foreground italic">
+              <Text className={styles.helperText}>
                 {t.stringAllowedValuesEnumNone}
-              </p>
+              </Text>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
-            <Input
+          <div className={styles.enumActions}>
+            <TextInput
               type="text"
               value={enumValue}
               onChange={(e) => setEnumValue(e.target.value)}
               placeholder={t.stringAllowedValuesEnumAddPlaceholder}
-              className="h-8 text-xs flex-1"
+              size="xs"
+              className={styles.enumInput}
               onKeyDown={(e) => e.key === "Enter" && handleAddEnumValue()}
             />
-            <button
+            <Button
               type="button"
               onClick={handleAddEnumValue}
-              className="px-3 py-1 h-8 rounded-md bg-secondary text-xs font-medium hover:bg-secondary/80"
+              size="xs"
+              variant="light"
             >
               {t.stringAllowedValuesEnumAddLabel}
-            </button>
+            </Button>
           </div>
         </div>
       )}

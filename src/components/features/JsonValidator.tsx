@@ -1,14 +1,8 @@
+import { Modal, Text } from "@mantine/core";
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { AlertCircle, Check, Loader2 } from "lucide-react";
 import type * as Monaco from "monaco-editor";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "../../components/ui/dialog.tsx";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import {
   formatTranslation,
@@ -19,6 +13,7 @@ import {
   type ValidationResult,
   validateJson,
 } from "../../utils/jsonValidator.ts";
+import styles from "./JsonValidator.module.css";
 
 /** @public */
 export interface JsonValidatorProps {
@@ -115,16 +110,22 @@ export function JsonValidator({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-5xl max-h-[700px] flex flex-col jsonjoy">
-        <DialogHeader>
-          <DialogTitle>{t.validatorTitle}</DialogTitle>
-          <DialogDescription>{t.validatorDescription}</DialogDescription>
-        </DialogHeader>
-        <div className="flex-1 flex flex-col md:flex-row gap-4 py-4 overflow-hidden h-[600px]">
-          <div className="flex-1 flex flex-col h-full">
-            <div className="text-sm font-medium mb-2">{t.validatorContent}</div>
-            <div className="border rounded-md flex-1 h-full">
+    <Modal
+      opened={open}
+      onClose={() => onOpenChange(false)}
+      size="xl"
+      title={t.validatorTitle}
+      classNames={{ content: styles.modalContent }}
+      centered
+    >
+      <Text size="sm" c="dimmed">
+        {t.validatorDescription}
+      </Text>
+      <div className={styles.body}>
+        <div className={styles.panels}>
+          <div className={styles.panel}>
+            <Text className={styles.panelTitle}>{t.validatorContent}</Text>
+            <div className={styles.editorContainer}>
               <Editor
                 height="600px"
                 defaultLanguage="json"
@@ -133,8 +134,8 @@ export function JsonValidator({
                 beforeMount={handleJsonEditorBeforeMount}
                 onMount={handleEditorDidMount}
                 loading={
-                  <div className="flex items-center justify-center h-full w-full bg-secondary/30">
-                    <Loader2 className="h-6 w-6 animate-spin" />
+                  <div className={styles.loader}>
+                    <Loader2 size={24} className="jsonjoy-spin" />
                   </div>
                 }
                 options={editorOptions}
@@ -143,19 +144,19 @@ export function JsonValidator({
             </div>
           </div>
 
-          <div className="flex-1 flex flex-col h-full">
-            <div className="text-sm font-medium mb-2">
+          <div className={styles.panel}>
+            <Text className={styles.panelTitle}>
               {t.validatorCurrentSchema}
-            </div>
-            <div className="border rounded-md flex-1 h-full">
+            </Text>
+            <div className={styles.editorContainer}>
               <Editor
                 height="600px"
                 defaultLanguage="json"
                 value={JSON.stringify(schema, null, 2)}
                 beforeMount={handleSchemaEditorBeforeMount}
                 loading={
-                  <div className="flex items-center justify-center h-full w-full bg-secondary/30">
-                    <Loader2 className="h-6 w-6 animate-spin" />
+                  <div className={styles.loader}>
+                    <Loader2 size={24} className="jsonjoy-spin" />
                   </div>
                 }
                 options={schemaViewerOptions}
@@ -167,20 +168,24 @@ export function JsonValidator({
 
         {validationResult && (
           <div
-            className={`rounded-md p-4 ${validationResult.valid ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"} transition-all duration-300 ease-in-out`}
+            className={`${styles.result} ${
+              validationResult.valid
+                ? styles.resultSuccess
+                : styles.resultError
+            }`}
           >
-            <div className="flex items-center">
+            <div className={styles.resultHeader}>
               {validationResult.valid ? (
                 <>
-                  <Check className="h-5 w-5 text-green-500 mr-2" />
-                  <p className="text-green-700 font-medium">
+                  <Check size={20} className={styles.iconSuccess} />
+                  <Text className={styles.resultTitle} c="green">
                     {t.validatorValid}
-                  </p>
+                  </Text>
                 </>
               ) : (
                 <>
-                  <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
-                  <p className="text-red-700 font-medium">
+                  <AlertCircle size={20} className={styles.iconError} />
+                  <Text className={styles.resultTitle} c="red">
                     {validationResult.errors.length === 1
                       ? validationResult.errors[0].path === "/"
                         ? t.validatorErrorInvalidSyntax
@@ -188,7 +193,7 @@ export function JsonValidator({
                       : formatTranslation(t.validatorErrorCount, {
                           count: validationResult.errors.length,
                         })}
-                  </p>
+                  </Text>
                 </>
               )}
             </div>
@@ -196,16 +201,16 @@ export function JsonValidator({
             {!validationResult.valid &&
               validationResult.errors &&
               validationResult.errors.length > 0 && (
-                <div className="mt-3 max-h-[200px] overflow-y-auto">
+                <div className={styles.errorDetails}>
                   {validationResult.errors[0] && (
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-red-700">
+                    <div className={styles.errorPathRow}>
+                      <span className={styles.errorPath}>
                         {validationResult.errors[0].path === "/"
                           ? t.validatorErrorPathRoot
                           : validationResult.errors[0].path}
                       </span>
                       {validationResult.errors[0].line && (
-                        <span className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600">
+                        <span className={styles.errorLocation}>
                           {validationResult.errors[0].column
                             ? formatTranslation(
                                 t.validatorErrorLocationLineAndColumn,
@@ -222,31 +227,31 @@ export function JsonValidator({
                       )}
                     </div>
                   )}
-                  <ul className="space-y-2">
+                  <div className={styles.errorList}>
                     {validationResult.errors.map((error, index) => (
                       <button
                         key={`error-${error.path}-${index}`}
                         type="button"
-                        className="w-full text-left bg-white border border-red-100 rounded-md p-3 shadow-xs hover:shadow-md transition-shadow duration-200 cursor-pointer"
+                        className={styles.errorItem}
                         onClick={() =>
                           error.line &&
                           error.column &&
                           goToError(error.line, error.column)
                         }
                       >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <p className="text-sm font-medium text-red-700">
+                        <div className={styles.errorItemHeader}>
+                          <div>
+                            <p className={styles.errorItemTitle}>
                               {error.path === "/"
                                 ? t.validatorErrorPathRoot
                                 : error.path}
                             </p>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className={styles.errorItemMessage}>
                               {error.message}
                             </p>
                           </div>
                           {error.line && (
-                            <div className="text-xs bg-gray-100 px-2 py-1 rounded text-gray-600">
+                            <div className={styles.errorLocation}>
                               {error.column
                                 ? formatTranslation(
                                     t.validatorErrorLocationLineAndColumn,
@@ -261,12 +266,12 @@ export function JsonValidator({
                         </div>
                       </button>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
           </div>
         )}
-      </DialogContent>
-    </Dialog>
+      </div>
+    </Modal>
   );
 }

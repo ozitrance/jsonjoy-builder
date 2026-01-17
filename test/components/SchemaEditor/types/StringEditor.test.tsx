@@ -1,3 +1,4 @@
+import { MantineProvider } from "@mantine/core";
 import { render } from "@testing-library/react";
 import "global-jsdom/register";
 import { describe, test } from "node:test";
@@ -14,7 +15,9 @@ describe("StringEditor", () => {
         type: "number",
       },
     });
-    t.assert.snapshot(render(element).container.innerHTML);
+    t.assert.snapshot(
+      render(<MantineProvider>{element}</MantineProvider>).container.innerHTML,
+    );
   });
   test("read-only mode doesn't show constraints", (t) => {
     const element = React.createElement(StringEditor, {
@@ -25,6 +28,8 @@ describe("StringEditor", () => {
         type: "number",
       },
     });
-    t.assert.snapshot(render(element).container.innerHTML);
+    t.assert.snapshot(
+      render(<MantineProvider>{element}</MantineProvider>).container.innerHTML,
+    );
   });
 });

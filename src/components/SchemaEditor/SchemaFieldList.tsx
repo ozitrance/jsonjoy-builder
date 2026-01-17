@@ -9,6 +9,7 @@ import type {
 } from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
+import styles from "./SchemaFieldList.module.css";
 
 interface SchemaFieldListProps {
   schema: JSONSchemaType;
@@ -109,7 +110,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   );
 
   return (
-    <div className="space-y-2 animate-in">
+    <div className={styles.list}>
       {properties.map((property) => (
         <SchemaPropertyEditor
           key={property.name}

@@ -1,0 +1,93 @@
+.page {
+  background: linear-gradient(
+    180deg,
+    var(--mantine-color-body) 0%,
+    color-mix(in srgb, var(--mantine-color-body), white 5%) 100%
+  );
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.accentTop {
+  background: color-mix(in srgb, var(--mantine-color-blue-2), transparent 70%);
+  border-radius: 999px;
+  filter: blur(60px);
+  height: 320px;
+  opacity: 0.5;
+  position: absolute;
+  right: -100px;
+  top: -100px;
+  width: 320px;
+}
+
+.accentBottom {
+  background: color-mix(in srgb, var(--mantine-color-indigo-2), transparent 75%);
+  border-radius: 999px;
+  filter: blur(60px);
+  height: 320px;
+  opacity: 0.5;
+  position: absolute;
+  left: -120px;
+  bottom: -120px;
+  width: 320px;
+}
+
+.container {
+  padding: 64px 0 96px;
+  position: relative;
+  z-index: 1;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.heroTitle span {
+  color: var(--mantine-color-blue-6);
+}
+
+.editorCard {
+  box-shadow: var(--mantine-shadow-lg);
+  border: 1px solid var(--mantine-color-gray-2);
+}
+
+.sectionTitle {
+  text-align: center;
+}
+
+.codeBlock {
+  background: var(--mantine-color-gray-0);
+  border-radius: var(--mantine-radius-md);
+  font-size: 0.75rem;
+  padding: 8px;
+  overflow-x: auto;
+}
+
+.linkList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.footer {
+  border-top: 1px solid var(--mantine-color-gray-3);
+  margin-top: 64px;
+  padding-top: 16px;
+}
+
+.footerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: var(--mantine-color-blue-6);
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  color: var(--mantine-color-blue-7);
+}

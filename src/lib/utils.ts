@@ -1,28 +1,27 @@
 import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
 import type { Translation } from "../i18n/translation-keys.ts";
 import type { SchemaType } from "../types/jsonSchema.ts";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+  return clsx(inputs);
 }
 
 // Helper functions for backward compatibility
 export const getTypeColor = (type: SchemaType): string => {
   switch (type) {
     case "string":
-      return "text-blue-500 bg-blue-50";
+      return "jsonjoy-type-pill jsonjoy-type-pill--string";
     case "number":
     case "integer":
-      return "text-purple-500 bg-purple-50";
+      return "jsonjoy-type-pill jsonjoy-type-pill--number";
     case "boolean":
-      return "text-green-500 bg-green-50";
+      return "jsonjoy-type-pill jsonjoy-type-pill--boolean";
     case "object":
-      return "text-orange-500 bg-orange-50";
+      return "jsonjoy-type-pill jsonjoy-type-pill--object";
     case "array":
-      return "text-pink-500 bg-pink-50";
+      return "jsonjoy-type-pill jsonjoy-type-pill--array";
     case "null":
-      return "text-gray-500 bg-gray-50";
+      return "jsonjoy-type-pill jsonjoy-type-pill--null";
   }
 };
 

@@ -1,3 +1,4 @@
+import { Text } from "@mantine/core";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import {
   getSchemaProperties,
@@ -10,6 +11,7 @@ import { asObjectSchema, isBooleanSchema } from "../../../types/jsonSchema.ts";
 import AddFieldButton from "../AddFieldButton.tsx";
 import SchemaPropertyEditor from "../SchemaPropertyEditor.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
+import styles from "./TypeEditors.module.css";
 
 const ObjectEditor: React.FC<TypeEditorProps> = ({
   schema,
@@ -110,9 +112,9 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   };
 
   return (
-    <div className="space-y-4">
+    <div className={styles.stack}>
       {properties.length > 0 ? (
-        <div className="space-y-2">
+        <div className={styles.stack}>
           {properties.map((property) => (
             <SchemaPropertyEditor
               readOnly={readOnly}
@@ -136,13 +138,13 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
           ))}
         </div>
       ) : (
-        <div className="text-sm text-muted-foreground italic p-2 text-center border rounded-md">
+        <Text className={`${styles.helperText} ${styles.emptyState}`} ta="center">
           {t.objectPropertiesNone}
-        </div>
+        </Text>
       )}
 
       {!readOnly && (
-        <div className="mt-4">
+        <div>
           <AddFieldButton onAddField={handleAddProperty} variant="secondary" />
         </div>
       )}

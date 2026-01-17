@@ -10,6 +10,7 @@ import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
+import styles from "./SchemaVisualEditor.module.css";
 
 /** @public */
 export interface SchemaVisualEditorProps {
@@ -104,18 +105,20 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     Object.keys(schema.properties).length > 0;
 
   return (
-    <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
+    <div className={`${styles.container} jsonjoy`}>
       {!readOnly && (
-        <div className="mb-6 shrink-0">
+        <div className={styles.actionRow}>
           <AddFieldButton onAddField={handleAddField} />
         </div>
       )}
 
-      <div className="grow overflow-auto">
+      <div className={styles.content}>
         {!hasFields ? (
-          <div className="text-center py-10 text-muted-foreground">
-            <p className="mb-3">{t.visualEditorNoFieldsHint1}</p>
-            <p className="text-sm">{t.visualEditorNoFieldsHint2}</p>
+          <div className={styles.emptyState}>
+            <p className={styles.emptyStateTitle}>
+              {t.visualEditorNoFieldsHint1}
+            </p>
+            <p>{t.visualEditorNoFieldsHint2}</p>
           </div>
         ) : (
           <SchemaFieldList

@@ -1,3 +1,4 @@
+import { ActionIcon, Tabs } from "@mantine/core";
 import { Maximize2 } from "lucide-react";
 import {
   type FC,
@@ -5,17 +6,12 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../../components/ui/tabs.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
 import JsonSchemaVisualizer from "./JsonSchemaVisualizer.tsx";
 import SchemaVisualEditor from "./SchemaVisualEditor.tsx";
+import styles from "./JsonSchemaEditor.module.css";
 
 /** @public */
 export interface JsonSchemaEditorProps {
@@ -49,9 +45,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
     setIsFullscreen(!isFullscreen);
   };
 
-  const fullscreenClass = isFullscreen
-    ? "fixed inset-0 z-50 bg-background"
-    : "";
+  const fullscreenClass = isFullscreen ? styles.fullscreen : "";
 
   const handleMouseDown = (e: ReactMouseEvent) => {
     e.preventDefault();
@@ -82,88 +76,82 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   return (
     <div
       className={cn(
-        "json-editor-container w-full",
+        styles.container,
         fullscreenClass,
         className,
         "jsonjoy",
       )}
     >
       {/* For mobile screens - show as tabs */}
-      <div className="block lg:hidden w-full">
-        <Tabs defaultValue="visual" className="w-full">
-          <div className="flex items-center justify-between px-4 py-3 border-b w-full">
-            <h3 className="font-medium">{t.schemaEditorTitle}</h3>
-            <div className="flex items-center gap-2">
-              <button
+      <div className={styles.mobileTabs}>
+        <Tabs defaultValue="visual" keepMounted={false}>
+          <div className={styles.header}>
+            <h3 className={styles.headerTitle}>{t.schemaEditorTitle}</h3>
+            <div className={styles.headerActions}>
+              <ActionIcon
                 type="button"
+                variant="subtle"
                 onClick={toggleFullscreen}
-                className="p-1.5 rounded-md hover:bg-secondary transition-colors"
                 aria-label={t.schemaEditorToggleFullscreen}
               >
                 <Maximize2 size={16} />
-              </button>
-              <TabsList className="grid grid-cols-2 w-[200px]">
-                <TabsTrigger value="visual">
+              </ActionIcon>
+              <Tabs.List className={styles.tabsList}>
+                <Tabs.Tab value="visual">
                   {t.schemaEditorEditModeVisual}
-                </TabsTrigger>
-                <TabsTrigger value="json">
+                </Tabs.Tab>
+                <Tabs.Tab value="json">
                   {t.schemaEditorEditModeJson}
-                </TabsTrigger>
-              </TabsList>
+                </Tabs.Tab>
+              </Tabs.List>
             </div>
           </div>
 
-          <TabsContent
+          <Tabs.Panel
             value="visual"
-            className={cn(
-              "focus:outline-hidden w-full",
-              isFullscreen ? "h-screen" : "h-[500px]",
-            )}
+            className={styles.panel}
+            style={{ height: isFullscreen ? "100vh" : 500 }}
           >
             <SchemaVisualEditor
               readOnly={readOnly}
               schema={schema}
               onChange={handleSchemaChange}
             />
-          </TabsContent>
+          </Tabs.Panel>
 
-          <TabsContent
+          <Tabs.Panel
             value="json"
-            className={cn(
-              "focus:outline-hidden w-full",
-              isFullscreen ? "h-screen" : "h-[500px]",
-            )}
+            className={styles.panel}
+            style={{ height: isFullscreen ? "100vh" : 500 }}
           >
             <JsonSchemaVisualizer
               schema={schema}
               onChange={handleSchemaChange}
             />
-          </TabsContent>
+          </Tabs.Panel>
         </Tabs>
       </div>
 
       {/* For large screens - show side by side */}
       <div
         ref={containerRef}
-        className={cn(
-          "hidden lg:flex lg:flex-col w-full",
-          isFullscreen ? "h-screen" : "h-[600px]",
-        )}
+        className={styles.desktopPanels}
+        style={{ height: isFullscreen ? "100vh" : 600 }}
       >
-        <div className="flex items-center justify-between px-4 py-3 border-b w-full shrink-0">
-          <h3 className="font-medium">{t.schemaEditorTitle}</h3>
-          <button
+        <div className={styles.header}>
+          <h3 className={styles.headerTitle}>{t.schemaEditorTitle}</h3>
+          <ActionIcon
             type="button"
+            variant="subtle"
             onClick={toggleFullscreen}
-            className="p-1.5 rounded-md hover:bg-secondary transition-colors"
             aria-label={t.schemaEditorToggleFullscreen}
           >
             <Maximize2 size={16} />
-          </button>
+          </ActionIcon>
         </div>
-        <div className="flex flex-row w-full grow min-h-0">
+        <div className={styles.splitContainer}>
           <div
-            className="h-full min-h-0"
+            className={styles.panel}
             style={{ width: `${leftPanelWidth}%` }}
           >
             <SchemaVisualEditor
@@ -175,11 +163,11 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
           {/** biome-ignore lint/a11y/noStaticElementInteractions: What exactly does this div do? */}
           <div
             ref={resizeRef}
-            className="w-1 bg-border hover:bg-primary cursor-col-resize shrink-0"
+            className={styles.resizeHandle}
             onMouseDown={handleMouseDown}
           />
           <div
-            className="h-full min-h-0"
+            className={styles.panel}
             style={{ width: `${100 - leftPanelWidth}%` }}
           >
             <JsonSchemaVisualizer

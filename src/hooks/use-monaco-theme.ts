@@ -41,7 +41,8 @@ export interface MonacoEditorOptions {
 export const defaultEditorOptions: MonacoEditorOptions = {
   minimap: { enabled: false },
   fontSize: 14,
-  fontFamily: "var(--font-sans), 'SF Mono', Monaco, Menlo, Consolas, monospace",
+  fontFamily:
+    "var(--mantine-font-family), 'SF Mono', Monaco, Menlo, Consolas, monospace",
   lineNumbers: "on",
   roundedSelection: false,
   scrollBeyondLastLine: false,
@@ -70,17 +71,18 @@ export function useMonacoTheme() {
   // Check for dark mode by examining CSS variables
   useEffect(() => {
     const checkDarkMode = () => {
-      // Get the current background color value
-      const backgroundColor = getComputedStyle(document.documentElement)
-        .getPropertyValue("--background")
-        .trim();
+      const scheme =
+        document.documentElement.getAttribute("data-mantine-color-scheme");
+      if (scheme) {
+        setIsDarkMode(scheme === "dark");
+        return;
+      }
 
-      // If the background color HSL has a low lightness value, it's likely dark mode
-      const isDark =
-        backgroundColor.includes("222.2") ||
-        backgroundColor.includes("84% 4.9%");
-
-      setIsDarkMode(isDark);
+      if (typeof window !== "undefined") {
+        setIsDarkMode(
+          window.matchMedia("(prefers-color-scheme: dark)").matches,
+        );
+      }
     };
 
     // Check initially
@@ -90,7 +92,7 @@ export function useMonacoTheme() {
     const observer = new MutationObserver(checkDarkMode);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["class", "style"],
+      attributeFilter: ["class", "style", "data-mantine-color-scheme"],
     });
 
     return () => observer.disconnect();

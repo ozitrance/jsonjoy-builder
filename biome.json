@@ -18,8 +18,7 @@
   "css": {
     "parser": {
       "allowWrongLineComments": true,
-      "cssModules": false,
-      "tailwindDirectives": true
+      "cssModules": true
     }
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
